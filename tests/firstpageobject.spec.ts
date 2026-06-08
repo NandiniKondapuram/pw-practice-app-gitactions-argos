@@ -31,3 +31,8 @@ test('Date picker',async({page})=>{
       await pm.datePicker().datePickerWithRange(8,13)
 })
 
+test.only('Github Actions',async({page})=>{
+   const pm=new PageObjectManager(page)
+   await pm.navigateTo().formlayoutdirection()
+   await pm.navigateTo().datepickerdirection()
+})
