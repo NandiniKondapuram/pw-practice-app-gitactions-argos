@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { TestOptions } from './test.options';
+//import {createArgosReporterOptions}  from "@argos-ci/playwright";
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -24,7 +26,18 @@ export default defineConfig<TestOptions>({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    // Use "dot" reporter on CI, "list" otherwise (Playwright default).
+    process.env.CI ? ["dot"] : ["list"],
+
+    // Add Argos reporter.
+    [
+      "@argos-ci/playwright/reporter",
+      // Upload only on CI.
+     { uploadToArgos: !!process.env.CI },
+    ],
+    ['html']
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -32,6 +45,7 @@ export default defineConfig<TestOptions>({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    screenshot: "only-on-failure",
     video:
     {
       mode:'on',
@@ -50,15 +64,6 @@ export default defineConfig<TestOptions>({
       
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
 
     
   ],

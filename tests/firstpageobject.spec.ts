@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test'
 import {fa, faker} from '@faker-js/faker'
-
+import { argosScreenshot } from "@argos-ci/playwright";
 import { PageObjectManager } from '../Page_Object_Model/pageobjectmanger'
 test.beforeEach(async({page})=>{
     await page.goto('/')
@@ -34,5 +34,7 @@ test('Date picker',async({page})=>{
 test.only('Github Actions',async({page})=>{
    const pm=new PageObjectManager(page)
    await pm.navigateTo().formlayoutdirection()
+   await argosScreenshot(page, "form Layout page");
    await pm.navigateTo().datepickerdirection()
+   await argosScreenshot(page, "Date picker page");
 })
